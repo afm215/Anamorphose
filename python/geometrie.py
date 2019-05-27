@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 def main():
-    resultat = pointimage(350,0,250,1000,400)
+    resultat = pointimage(350,0,250,1300,600)
     indice =  testimage(resultat)
     return indice
  
@@ -62,13 +62,16 @@ def ecartaucentre(tableau):
     xcentre , ycentre = parcourir(tableau)
     longupx = len(tableau)
     longupy = len(tableau[0])
-    longueurx = abs(tableau[0][199][0] - xcentre)
-    longueury = abs(tableau[0][199][1] - ycentre) 
+    somme = 0
+    longueurx = 0
+    longueury = 0 
     for i in range(longupx):
         for j in range(longupy):
-            longueurx = min(longueurx, abs(tableau[i][j][0] - xcentre))
-            longueury = min(longueury, abs(tableau[i][j][1] - ycentre))
-    return longueurx, longueury                 
+            if type(tableau[i][j])!=type(False):
+                longueurx  += abs(tableau[i][j][0] - xcentre)
+                longueury += abs(tableau[i][j][1] - ycentre)
+                somme += 1
+    return longueurx//somme, longueury//somme                
         
               
 
@@ -111,14 +114,11 @@ def parcourir(tableau):
     taillex = len(tableau)
     tailley = len(tableau[0])
     resultat = 0
-    compte = 0
     moyennex = 0
     moyenney =0
     for i in range(taillex):
         for j in range(tailley):
-            compte += 1
             if type(tableau[i][j]) != type(False):
-                
                 resultat += 1
                 moyennex += tableau[i][j][0]
                 moyenney += tableau[i][j][1]
@@ -130,10 +130,10 @@ def pointimage (xs,ys,zs,longuz, longuy):
     rayon = 20
     """26"""
     
-    echelle = 5
+    echelle = 8
     xdebut = 30
     ydebut = -(longuy/echelle)//2
-    zdebut = 240
+    zdebut = 246
     resultat = []
     
     for i in range(longuz):
@@ -199,10 +199,10 @@ def testimage (tableau):
     """affiche l'image des pixels"""
     tableauim = plt.imread("/home/alexandre/Images/lena.png")
     image = []
-    echelle = 1
+    echelle2 = 0.6
     xcentre, ycentre = parcourir(tableau)
     
-    xcentre = int(xcentre)
+    xcentre = int(xcentre) +20
     ycentre = int(ycentre)
     longuimagex = len(tableauim)
     """longuimagex = (len(tableauim)/echelle)//2"""
@@ -221,8 +221,8 @@ def testimage (tableau):
             if type(tableau[i][j]) != type(False): 
                 x = tableau[i][j][0]
                 y = tableau[i][j][1]
-                imagi = int((xcentre-x) *echelle) + indicentre
-                imagj = int((ycentre - y) * echelle)+indjcentre
+                imagi = int((x - xcentre) *echelle2) + indicentre
+                imagj = int((y- ycentre) * echelle2)+indjcentre
                 if imagi < longuimagex and imagi >= 0 and imagj >= 0 and imagj< longuimagey :
                     
                     tableauindice.append( (imagi,imagj))
