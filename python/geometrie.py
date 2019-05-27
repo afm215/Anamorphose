@@ -76,22 +76,7 @@ def faitpartiecylindre (x,y,r):
     """programme test"""
     return x**2 + y**2 == r**2
 
-
-def getImage(nomFichier) :
-    """Cette fonction renvoie un triplet de 3 matrices R, V et B de même
-    dimension L x C qui correspondent aux trois couleurs de base
-    rouge, vert et bleu de l'image. Cette image est située dans le fichier
-    nomFichier d'extension .png obligatoire. L'image possède L lignes et C
-    colonnes de pixels."""
-    
-    npImage = plt.imread(nomFichier)
-    npImage = 255*npImage    # Lecture avec Pyzo
-
-    R = npImage[ : , : ,0]
-    V = npImage[ : , : ,1]
-    B = npImage[ : , : ,2]
-    
-    return R, V, B    
+ 
 
 
 def intersectiondroite(x, y ,z, vecteur, rayon):
@@ -207,19 +192,7 @@ def rotationvecteur (vecteur, normale):
 
 
 
-def saveImage(nomFichier, R, V, B) :
-    """ Enregistre l'image contenue dans les trois matrices R, V et B, de type
-    (ligne, colonne) dans un fichier nomFichier d'extension .png obligatoire.
-    
-    Cette fonction ne retourne rien. """
-    
-    n = R.shape
-    npImage = np.zeros( (n[0], n[1], 3 ))
-    
-    npImage[ : , : , 0] = R/255
-    npImage[ : , : , 1] = V/255
-    npImage[ : , : , 2] = B/255
-    plt.imsave(nomFichier, npImage)
+
 
             
 def testimage (tableau):
