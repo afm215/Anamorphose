@@ -11,7 +11,7 @@ EXEC = ./test
 all:bin exec
 	
 bin:
-	$(CC) -c $(SRCS) $(LIBs)
+	$(CC) -c -g $(SRCS) $(LIBs)
 exec: 
 	$(CC) $(ALL) -o $(NAME) $(LIB) $(LIBs)
 
