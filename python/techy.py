@@ -112,6 +112,8 @@ def opti(tableau, rayon):
     ymin = tri(tablim)
     xmin = tablim[0][0][0]
     
+    
+    
             
             
             

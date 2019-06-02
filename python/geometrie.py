@@ -202,7 +202,7 @@ def testimage (tableau):
     echelle2 = 0.6
     xcentre, ycentre = parcourir(tableau)
     
-    xcentre = int(xcentre) +20
+    xcentre = int(xcentre) 
     ycentre = int(ycentre)
     longuimagex = len(tableauim)
     """longuimagex = (len(tableauim)/echelle)//2"""
