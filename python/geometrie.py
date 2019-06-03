@@ -229,7 +229,7 @@ def testimage (tableau):
                     image[i].append(tableauim[imagi][ imagj])
                     
                 else:
-                    image[i].append([0,1.,0,1.])
+                    image[i].append([0,0,0,1.])
             else:
                 image[i].append([1.,0,0,1.])
     plt.imshow(np.array(image))

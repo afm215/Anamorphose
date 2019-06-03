@@ -1,7 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-
+def main():
+    a = plt.imread("/home/alexandre/Images/lena.png")
+    return opti(a, 20, 350,0,250)
+    
+    
 def resolution(vecteur, rayon, x ,y ,z):
     """resolution du systeme d'intersection de la droite de vecteur directeur vecteur et passant par le point de coordonnées x,y,z avec le cylindre de rayon rayon d'axe Oz"""
     xvecteur = vecteur.dot([1,0,0])
@@ -99,49 +103,68 @@ def reorgan(tableau):
     long1 = len(tableau)
     resultat = [[tableau[0]]]
     j = 0
+    k = 0
     for i in range(1,long1):
-        if tableau[i][0][0] == tableau[i-1][0][0]:
+        if abs(tableau[i][0][0] - tableau[i-1][0][0]) < 1   :
             resultat[j].append(tableau[i])
         else:
             resultat.append([tableau[i]])
             j = j+1    
-    return resultat        
+    return np.array(resultat)        
+ 
+ 
          
-
+def derniereverif(tableau):
+    longi = len(tableau)
+    ymax = 0
+    for i in range(longi):
+        ymax = max(ymax, len(tableau[i]))
+    for i in range(longi):
+        ecart = ymax - len(tableau[i])
+        for j in range(ecart):
+            tableau[i].append([0.,0.,0.,1.])
+            
+            
 def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
     resultat = []
     longi = len(tableau)
-    longj = len(tableau[0])
+    
     for i in range(longi):
         ajoutdebut = []
         ajoutfin = []
-        a = (tableau[i][0][0][1] - ymin) // echelle
+        a = int( (tableau[i][0][0][1] - ymin) // echelle)
         """le rang -1 correspond au dernier element d une liste"""
-        b =  (- tableau[i][-1][0][1] + ymin) // echelle
         for j in range (a):
             ajoutdebut.append([0.,0.,0.,1.])
         resultat.append(ajoutdebut)
             
-        
+    print("premier stade")    
             
                  
             
     for i in range (longi):
-        for j in range(longj -1):
+        for j in range(len(tableau[i]) -1):
             pixel = tableau[i][j][1]
             resultat[i].append(pixel)
-            nbrpoint = 
+            nbrpoint = int((tableau[i][j+1][0][1] - tableau[i][j+1][0][1])// echelle -1)
+            for k in range (nbrpoint):
+                resultat[i].append(pixel)
+
         
     for i in range(longi):
         ajoutfin = []
         """le rang -1 correspond au dernier element d une liste"""
-        b =  (- tableau[i][-1][0][1] + ymin) // echelle    
+        b =  int((- tableau[i][-1][0][1] + ymin) // echelle)    
         for j in range(b):
             ajoutfin.append([0.,0.,0.,1.])
-            
+        resultat[i] = resultat[i] + ajoutfin  
+    derniereverif(resultat)    
+    return np.array(resultat)      
 
 """ idee tracer les droites passants par tous les points de l'image dans le cylindre ajouter les origines dans un tabeau à trier selon abcisses et ordonnée pour obtenir image"""
-"""rappel repere avec y entrant e vers le haut"""
+"""rappel repere avec y entrant z vers le haut"""
+
+
 def opti(tableau, rayon, xs, ys ,zs):
     longx = len(tableau)
     longy = len(tableau[0])
@@ -163,17 +186,23 @@ def opti(tableau, rayon, xs, ys ,zs):
             vect = rotationvecteur(vect, calculnormale(intersec))
             tablim.append([interectangle(intersec, vect), tableau[i][j]])
     print("step2 done")
-    print (len(tablim))
     ymin, ymax = tri(np.array(tablim))
     print("step 3 done")
     xmin = tablim[0][0][0]
     xmax = tablim[len(tablim) -1][0][0]
+
     tablim = reorgan(tablim)
     print("step 4 done")
+
+    
+    tablim = remplissage(tablim, xmin ,xmax, ymin, ymax, echelle)
+    return tablim
     plt.imshow(np.array(tablim))
     plt.show()
     
-    
+
+            
+           
     
     
     
