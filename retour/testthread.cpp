@@ -14,7 +14,10 @@ void affiche(int *nombrethread, sf::Mutex *m)
     }
     m->unlock();
 }
-
+void affiche2()
+{
+    std::cout <<"coucou"<<std::endl;
+}
 int main()
 {   
     sf::Mutex m1;
@@ -23,6 +26,12 @@ int main()
     int *nbr3 = new int(5);
     std::thread t1(affiche,&nbr, &m1 );
     std::thread t2 (affiche,&nbr2,&m1);
+    std::thread tableau[4];
+    for(int i= 0; i <=3 ; i++)
+    {
+        tableau[i] = std::thread(affiche2);
+    }
+
     //std::thread t3(affiche,3);//
     
     for (int i = 0; i <= 10; i++)
@@ -38,5 +47,9 @@ int main()
 //t3.join();//
 t1.join();
 t2.join();
+for (int i =0; i++; i<=3)
+{
+    tableau[i].join();
+}
 return 0;
 }

@@ -2,7 +2,7 @@ CC = g++
 RM = rm -f
 NAME = test
 ALL = *.o
-SRCS = Renderwindow.cpp
+SRCS = Threadtest.cpp
 OBJS = $(SRCS:.c=.o)
 LIB = -lsfml-graphics -lsfml-window -lsfml-system 
 LIBs = -lpthread -std=c++11 -std=gnu++11 
@@ -21,7 +21,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 re: fclean all
-	$(EXEC)
+
 full : re 
 	$(EXEC)
 

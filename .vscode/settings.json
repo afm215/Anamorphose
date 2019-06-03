@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "ostream": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled",
+    "python.pythonPath": "/home/alexandre/miniconda3/bin/python",
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+}
