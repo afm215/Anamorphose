@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+def recherchetab ( tableau):
+     long = len(tableau)
+     
 def main():
     a = plt.imread("/home/alexandre/Images/lena.png")
     return opti(a, 20, 350,0,250)
@@ -92,11 +95,14 @@ def tri (tableau):
             print("premiere boucle passe")
         if i == long//2 :
             print("premiere moitie ok")   
-        while (j> 0 and ((tableau[j][0][0] < tableau[j - 1][0][0]) or ( (tableau[j][0][0] == tableau[j - 1][0][0]) and (tableau[j][0][1] < tableau[j - 1][0][1]) ))):
+        while (j> 0 and ((int(tableau[j][0][0]) - int( tableau[j - 1][0][0]) < 0 ) or ( ((int(tableau[j][0][0]) - int(tableau[j - 1][0][0])) == 0) and (tableau[j][0][1] < tableau[j - 1][0][1]) ) )  ):
             tableau[j], tableau[j-1] = tableau[j-1], tableau[j]
             j = j-1
             if j <0 :
                 print("warning")
+        if j == 7902:
+            print((int(tableau[j][0][0]) - int( tableau[j - 1][0][0])) < 0 )  
+            print(i)      
     return ymin, ymax   
     
 def reorgan(tableau):
@@ -105,7 +111,7 @@ def reorgan(tableau):
     j = 0
     k = 0
     for i in range(1,long1):
-        if abs(tableau[i][0][0] - tableau[i-1][0][0]) < 1   :
+        if (int(tableau[i][0][0]) -int( tableau[i-1][0][0])) ==0   :
             resultat[j].append(tableau[i])
         else:
             resultat.append([tableau[i]])
@@ -177,7 +183,7 @@ def opti(tableau, rayon, xs, ys ,zs):
     for i in range(longx):
         tableaucoor.append([])
         for j in range(longy):
-            tableaucoor[i].append([i * echelle + ydebut, -j*echelle + zdebut])
+            tableaucoor[i].append([j * echelle + ydebut, -i*echelle + zdebut])
     print("step 1 done")        
     for i in range(longx):
         for j in range(longy):
@@ -186,17 +192,20 @@ def opti(tableau, rayon, xs, ys ,zs):
             vect = rotationvecteur(vect, calculnormale(intersec))
             tablim.append([interectangle(intersec, vect), tableau[i][j]])
     print("step2 done")
-    ymin, ymax = tri(np.array(tablim))
+    
+    tablim = np.array(tablim)
+    
+    ymin, ymax = tri(tablim)
     print("step 3 done")
     xmin = tablim[0][0][0]
     xmax = tablim[len(tablim) -1][0][0]
-
+    
     tablim = reorgan(tablim)
     print("step 4 done")
-
     
     tablim = remplissage(tablim, xmin ,xmax, ymin, ymax, echelle)
     return tablim
+    
     plt.imshow(np.array(tablim))
     plt.show()
     
