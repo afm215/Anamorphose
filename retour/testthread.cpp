@@ -11,6 +11,7 @@ void affiche(int *nombrethread, sf::Mutex *m)
     for (int i = 0; i <= 10; i++)
     {
         std::cout <<"thread"<< *nombrethread <<std::endl;;
+
     }
     m->unlock();
 }
@@ -38,6 +39,11 @@ int main()
     {
         std::cout <<"thread principal"<<std::endl;;
     }
+    std::thread tab[4];
+    for(int i = 0; i <4; i++)
+    {
+        tab[i] = std::thread(affiche, &i, &m1);
+    }  
 
     sf::Time premiere = sf::microseconds(1000);
     int test = premiere.asMicroseconds();
@@ -45,6 +51,10 @@ int main()
     
 
 //t3.join();//
+for(int i = 0; i<4; i++)
+{
+    tab[i].join();
+}
 t1.join();
 t2.join();
 for (int i =0; i++; i<=3)
