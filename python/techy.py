@@ -79,38 +79,104 @@ def calculnormale(intersec):
 def tri (tableau):
     long = len(tableau)
     ymin = tableau[0][0][1]
-    for i in range (tableau):
+    ymax= ymin
+    for i in range (long):
         j =i
         ymin = min( ymin, tableau[i][0][1])
-        while (j> 0 and (tableau[j][0][0] < tableau[j - 1][0][0]) or ( (tableau[j][0][0] == tableau[j - 1][0][0]) and (tableau[j][0][1] < tableau[j - 1][0][1]) )):
+        ymax = max(ymin, tableau[i][0][1])
+        if i ==7:
+            print("premiere boucle passe")
+        if i == long//2 :
+            print("premiere moitie ok")   
+        while (j> 0 and ((tableau[j][0][0] < tableau[j - 1][0][0]) or ( (tableau[j][0][0] == tableau[j - 1][0][0]) and (tableau[j][0][1] < tableau[j - 1][0][1]) ))):
             tableau[j], tableau[j-1] = tableau[j-1], tableau[j]
             j = j-1
-    return ymin        
+            if j <0 :
+                print("warning")
+    return ymin, ymax   
+    
+def reorgan(tableau):
+    long1 = len(tableau)
+    resultat = [[tableau[0]]]
+    j = 0
+    for i in range(1,long1):
+        if tableau[i][0][0] == tableau[i-1][0][0]:
+            resultat[j].append(tableau[i])
+        else:
+            resultat.append([tableau[i]])
+            j = j+1    
+    return resultat        
+         
 
+def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
+    resultat = []
+    longi = len(tableau)
+    longj = len(tableau[0])
+    for i in range(longi):
+        ajoutdebut = []
+        ajoutfin = []
+        a = (tableau[i][0][0][1] - ymin) // echelle
+        """le rang -1 correspond au dernier element d une liste"""
+        b =  (- tableau[i][-1][0][1] + ymin) // echelle
+        for j in range (a):
+            ajoutdebut.append([0.,0.,0.,1.])
+        resultat.append(ajoutdebut)
+            
+        
+            
+                 
+            
+    for i in range (longi):
+        for j in range(longj -1):
+            pixel = tableau[i][j][1]
+            resultat[i].append(pixel)
+            nbrpoint = 
+        
+    for i in range(longi):
+        ajoutfin = []
+        """le rang -1 correspond au dernier element d une liste"""
+        b =  (- tableau[i][-1][0][1] + ymin) // echelle    
+        for j in range(b):
+            ajoutfin.append([0.,0.,0.,1.])
+            
 
 """ idee tracer les droites passants par tous les points de l'image dans le cylindre ajouter les origines dans un tabeau à trier selon abcisses et ordonnée pour obtenir image"""
 """rappel repere avec y entrant e vers le haut"""
-def opti(tableau, rayon):
-    longx = len(tableau[0])
-    longy = len(tableau[1])
+def opti(tableau, rayon, xs, ys ,zs):
+    longx = len(tableau)
+    longy = len(tableau[0])
     echelle = rayon /longy
     zdebut =  longx * echelle/2
-    ydebur = - rayon / 2
+    ydebut = - rayon / 2
     tablim = []
     """on place l'image dans le cas tres simple orthogonale à axe Ox """
     tableaucoor = []
     for i in range(longx):
         tableaucoor.append([])
         for j in range(longy):
-            tableucoor[i].append([i * echelle + ydebut, -j*echelle + zdebut])
+            tableaucoor[i].append([i * echelle + ydebut, -j*echelle + zdebut])
+    print("step 1 done")        
     for i in range(longx):
         for j in range(longy):
             vect = calculvecteur(0, xs, tableaucoor[i][j][0], ys, tableaucoor[i][j][1], zs)
             intersec = intersectiondroite(xs, ys, zs,vect, rayon)
             vect = rotationvecteur(vect, calculnormale(intersec))
-            tablim.append(interectangle(intersec, vect), tableau[i][j])
-    ymin = tri(tablim)
+            tablim.append([interectangle(intersec, vect), tableau[i][j]])
+    print("step2 done")
+    print (len(tablim))
+    ymin, ymax = tri(np.array(tablim))
+    print("step 3 done")
     xmin = tablim[0][0][0]
+    xmax = tablim[len(tablim) -1][0][0]
+    tablim = reorgan(tablim)
+    print("step 4 done")
+    plt.imshow(np.array(tablim))
+    plt.show()
+    
+    
+    
+    
+    
     
     
     
