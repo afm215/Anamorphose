@@ -232,6 +232,7 @@ def testimage (tableau):
                     image[i].append([0,0,0,1.])
             else:
                 image[i].append([1.,0,0,1.])
+           
     plt.imshow(np.array(image))
     plt.show()            
     return np.array(tableauindice)
