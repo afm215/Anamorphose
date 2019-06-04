@@ -2,16 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import copy
-
+"""idée faire plein de trifusion avec un parametre gros au début et plus fin ensuite"""
 def main():
     a = plt.imread("/home/alexandre/Images/lena.png")
-    return opti(a, 20, 350,250)
+    return opti(a, 20, 400,800)
 
 
 def calculnormale(intersec):
     """calcul la normale à la surface du cylindre au point intersec"""
-    x = intersec.dot([1,0,0])
-    y = intersec.dot([0,1,0])
+    x = intersec[0]
+    y = intersec[1]
     norme = math.sqrt ( x**2 + y**2)
     normale = np.array([x,y,0])
     return normale / norme
@@ -75,7 +75,7 @@ def Fusion(tableau,p,q,r):
     i = 0
     j = 0
     for k in range(p, r+1):
-        if G[i][0] - D[j][0] < -16 or ((abs(G[i][0] - D[j][0]) <= 16) and (G[i][1]< D[j][1])):
+        if G[i][0] - D[j][0] < -0.5 or ((abs(G[i][0] - D[j][0]) <= 0.5) and (G[i][1]< D[j][1])):
             tableau[k] = G[i]
             i = i+1
         else:
@@ -86,8 +86,8 @@ def Fusion(tableau,p,q,r):
             
 def interectangle (intersec, vecteur):
     """intersecton de la droite de vecteur directeur vecteur et passant par le point intersec avec le plan (O,0x,0y"""
-    zvecteur = vecteur.dot([0,0,1])
-    z = intersec.dot([0,0,1])
+    zvecteur = vecteur[2]
+    z = intersec[1]
     if zvecteur == 0:
         return False
     else:
@@ -150,6 +150,7 @@ def opti(tableau, rayon, xs,zs):
     tablim = convert(tablim)
     long = len(tablim)
     Trifusion(tablim, 0, long -1)
+    return tablim
     
     ymin, ymax = recherchyminmax(tablim)
     
@@ -254,16 +255,18 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
     return resultat     
     
     
-
+"""idee trouver ordre des grandeurs en regardant les ecart minimus entre abscisses..."""
 def reorgan(tableau):
     long1 = len(tableau)
     resultat = [[tableau[0]]]
     j = 0
     k = 0
+    ref = tableau[0][0]
     for i in range(1,long1):
-        if abs(tableau[i][0] - tableau[i-1][0]) <= 16 :
+        if abs(ref - tableau[i-1][0]) <= 0.088 :
             resultat[j].append(tableau[i])
         else:
+            ref = tableau[i][0]
             resultat.append([tableau[i]])
             j = j+1    
     return np.array(resultat)       
