@@ -1,8 +1,39 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import copy
+
+def convert(tableau):
+    resultat = []
+    for i in range(len (tableau)):
+        resultat.append (np.append(tableau[i][0] , tableau[i][1]))
+    return np.array(resultat)   
+
+def coninvers(tableau):
+    resultat = []
+    for i in range(len(tableau)):
+        resultat.append([tableau[i][0:2], tableau[i][3:6]])
+    return resultat        
+
+
 def recherchetab ( tableau):
-     long = len(tableau)
+    """confirme le probleme au niveau du tri"""
+    long = len(tableau)
+    res = 0
+    resultat = []
+    for i in range(1, long ):
+        if abs(tableau[i][0][0] - 51.8) <=0.06:
+            res += 1
+            resultat.append(tableau[i])
+    return np.array(resultat) 
+    
+    
+def veriftri (tableau):
+    long = len(tableau)
+    for i in range(1,long):
+        if tableau[i][0][0] - tableau[i-1][0][0] < -0.001:
+            return i
+    return True                     
      
 def main():
     a = plt.imread("/home/alexandre/Images/lena.png")
@@ -75,6 +106,8 @@ def rotationvecteur (vecteur, normale):
     comportho = vecteur + compcol
     return compcol + comportho
     
+
+
 def calculnormale(intersec):
     """calcul la normale à la surface du cylindre au point intersec"""
     x = intersec.dot([1,0,0])
@@ -83,7 +116,11 @@ def calculnormale(intersec):
     normale = np.array([x,y,0])
     return normale / norme  
     
-def tri (tableau):
+
+
+
+def tri (tableau1):
+    tableau =np.copy(tableau1)
     long = len(tableau)
     ymin = tableau[0][0][1]
     ymax= ymin
@@ -91,27 +128,32 @@ def tri (tableau):
         j =i
         ymin = min( ymin, tableau[i][0][1])
         ymax = max(ymin, tableau[i][0][1])
-        if i ==7:
+        if i ==1000:
+            
             print("premiere boucle passe")
-        if i == long//2 :
-            print("premiere moitie ok")   
-        while (j> 0 and ((int(tableau[j][0][0]) - int( tableau[j - 1][0][0]) < 0 ) or ( ((int(tableau[j][0][0]) - int(tableau[j - 1][0][0])) == 0) and (tableau[j][0][1] < tableau[j - 1][0][1]) ) )  ):
-            tableau[j], tableau[j-1] = tableau[j-1], tableau[j]
+        if i == 2000:
+            print("10000") 
+            return ymin, ymax, tableau   
+        if i == long//4 :
+            print("premiere moitie ok") 
+            
+        while (j> 0 and ((tableau[j][0][0] -  tableau[j - 1][0][0] < - 0.001 )  or ( (abs(tableau[j][0][0] - tableau[j - 1][0][0]) <= 0.001) and (tableau[j][0][1] < tableau[j - 1][0][1]) ) )  ):
+            tableau[j], tableau[j-1] = copy.deepcopy(tableau[j-1]), copy.deepcopy(tableau[j])
             j = j-1
             if j <0 :
                 print("warning")
-        if j == 7902:
-            print((int(tableau[j][0][0]) - int( tableau[j - 1][0][0])) < 0 )  
-            print(i)      
-    return ymin, ymax   
+    return ymin, ymax, tableau   
+
     
+
+
 def reorgan(tableau):
     long1 = len(tableau)
     resultat = [[tableau[0]]]
     j = 0
     k = 0
     for i in range(1,long1):
-        if (int(tableau[i][0][0]) -int( tableau[i-1][0][0])) ==0   :
+        if tableau[i][0][0] - tableau[i-1][0][0] >= -0.001  :
             resultat[j].append(tableau[i])
         else:
             resultat.append([tableau[i]])
@@ -120,6 +162,8 @@ def reorgan(tableau):
  
  
          
+
+
 def derniereverif(tableau):
     longi = len(tableau)
     ymax = 0
@@ -130,6 +174,8 @@ def derniereverif(tableau):
         for j in range(ecart):
             tableau[i].append([0.,0.,0.,1.])
             
+
+
             
 def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
     resultat = []
@@ -137,7 +183,6 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
     
     for i in range(longi):
         ajoutdebut = []
-        ajoutfin = []
         a = int( (tableau[i][0][0][1] - ymin) // echelle)
         """le rang -1 correspond au dernier element d une liste"""
         for j in range (a):
@@ -157,18 +202,22 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
                 resultat[i].append(pixel)
 
         
-    for i in range(longi):
+    """for i in range(longi):
         ajoutfin = []
-        """le rang -1 correspond au dernier element d une liste"""
-        b =  int((- tableau[i][-1][0][1] + ymin) // echelle)    
+        """"""le rang -1 correspond au dernier element d une liste""""""
+        b =  int((- tableau[i][-1][0][1] + ymax) // echelle)    
         for j in range(b):
             ajoutfin.append([0.,0.,0.,1.])
-        resultat[i] = resultat[i] + ajoutfin  
+        resultat[i] = resultat[i] + ajoutfin """
+        
+        
     derniereverif(resultat)    
-    return np.array(resultat)      
+    return np.array(resultat)     
 
 """ idee tracer les droites passants par tous les points de l'image dans le cylindre ajouter les origines dans un tabeau à trier selon abcisses et ordonnée pour obtenir image"""
 """rappel repere avec y entrant z vers le haut"""
+
+
 
 
 def opti(tableau, rayon, xs, ys ,zs):
@@ -194,13 +243,18 @@ def opti(tableau, rayon, xs, ys ,zs):
     print("step2 done")
     
     tablim = np.array(tablim)
+    return tablim
+    ymin, ymax, tablim = tri(tablim)
+    return tablim
     
-    ymin, ymax = tri(tablim)
     print("step 3 done")
+    
     xmin = tablim[0][0][0]
     xmax = tablim[len(tablim) -1][0][0]
     
     tablim = reorgan(tablim)
+    
+    
     print("step 4 done")
     
     tablim = remplissage(tablim, xmin ,xmax, ymin, ymax, echelle)
