@@ -3,9 +3,50 @@ import matplotlib.pyplot as plt
 import math
 import copy
 """idée faire plein de trifusion avec un parametre gros au début et plus fin ensuite"""
+
+def comptecol (tableau):
+    for i in range(len(tableau)):
+        if len(tableau[i] ) <2:
+            return False
+        return True
+
+def parcourir(tableau):
+    """programme test"""
+    taillex = len(tableau)
+    tailley = len(tableau[0])
+    resultat = 0
+    moyennex = 0
+    moyenney =0
+    for i in range(taillex):
+        for j in range(len(tableau[i])):
+            if type(tableau[i][j]) != type(False):
+                resultat += 1
+                moyennex += tableau[i][j][0]
+                moyenney += tableau[i][j][1]
+    return moyennex/resultat, moyenney/resultat 
+    
+    
+def ecartaucentre(tableau):
+    """ecart des abscisses et ordonnées par rapport au point central"""
+    xcentre , ycentre = parcourir(tableau)
+    longupx = len(tableau)
+    longupy = len(tableau[0])
+    somme = 0
+    longueurx = 0
+    longueury = 0 
+    for i in range(longupx):
+        for j in range(len(tableau[i])):
+            if type(tableau[i][j])!=type(False):
+                longueurx  += abs(tableau[i][j][0] - xcentre)
+                longueury += abs(tableau[i][j][1] - ycentre)
+                somme += 1
+    return longueurx//somme, longueury//somme                
+          
+    
+    
 def main():
     a = plt.imread("/home/alexandre/Images/lena.png")
-    return opti(a, 20, 400,800)
+    return opti(a, 200, 400,800)
 
 
 def calculnormale(intersec):
@@ -42,8 +83,12 @@ def coninvers(tableau):
 def derniereverif(tableau):
     longi = len(tableau)
     ymax = 0
+    ymin = 10058
     for i in range(longi):
         ymax = max(ymax, len(tableau[i]))
+        ymin = (min(ymin, len(tableau[i])))
+    print(ymax)  
+    print(ymin)  
     for i in range(longi):
         ecart = ymax - len(tableau[i])
         for j in range(ecart):
@@ -63,19 +108,19 @@ def equationsecond (a,b,c):
     else:
         return [True, (-b - math.sqrt(delta))/(2*a), (-b + math.sqrt(delta))/(2*a)]          
     
-def Fusion(tableau,p,q,r):
+def Fusion(tableau,p,q,r, precision):
     G =[]
     D =[]
     for i in range( q-p +1):
         G.append(copy.deepcopy(tableau[p+i]))
     for j in range(r-q):
         D.append(copy.deepcopy(tableau[q+j+1]))
-    G.append([math.inf,0,0 ,0,0,0,0])
-    D.append([math.inf,0,0,0,0,0,0])
+    G.append([math.inf,0,-2,-2])
+    D.append([math.inf,0,-2,-2])
     i = 0
     j = 0
     for k in range(p, r+1):
-        if G[i][0] - D[j][0] < -0.5 or ((abs(G[i][0] - D[j][0]) <= 0.5) and (G[i][1]< D[j][1])):
+        if G[i][0] - D[j][0] < -precision or ((abs(G[i][0] - D[j][0]) <= precision) and (G[i][1]< D[j][1])):
             tableau[k] = G[i]
             i = i+1
         else:
@@ -92,7 +137,7 @@ def interectangle (intersec, vecteur):
         return False
     else:
         k = - z / zvecteur
-        return np.array([k * vecteur[0] + intersec[0],k * vecteur[1] + intersec[1], 0])
+        return k * vecteur[0] + intersec[0],k * vecteur[1] + intersec[1]
 
 
 
@@ -142,30 +187,27 @@ def opti(tableau, rayon, xs,zs):
             vect = calculvecteur(0, xs, tableaucoor[i][j][0], ys, tableaucoor[i][j][1], zs)
             intersec = intersectiondroite(xs, ys, zs,vect, rayon)
             vect = rotationvecteur(vect, calculnormale(intersec))
-            tablim.append([interectangle(intersec, vect), tableau[i][j]])
+            x,y = interectangle(intersec, vect)
+            tablim.append([x,y,i,j])
     print("step2 done")
     
-   
-    
-    tablim = convert(tablim)
     long = len(tablim)
-    Trifusion(tablim, 0, long -1)
-    return tablim
+    Trifusion(tablim, 0, long -1, 0.5)
+    print("premier tri fait")
+    
+    
     
     ymin, ymax = recherchyminmax(tablim)
-    
     
     print("step 3 done")
     
     xmin = tablim[0][0]
     xmax = tablim[-1][0]
     nbrelement = 0 
-    
     tablim = reorgan(tablim)
-    
     print("step 4 done")
     
-    tablim = remplissage(tablim, xmin ,xmax, ymin, ymax, echelle)
+    tablim = remplissage(tablim,tableau, xmin ,xmax, ymin, ymax)
     return tablim
     
     
@@ -199,7 +241,8 @@ def recherchyminmax (tableau):
     return ymin ,ymax
 
 
-def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
+def remplissage(tableau,tabpix, xmin , xmax , ymin , ymax):
+    echelle = 1.5
     resultat = []
     longi = len(tableau)
     
@@ -216,12 +259,13 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
             
     for i in range (longi):
         for j in range(len(tableau[i]) -1):
-            pixel = tableau[i][j][3:7]
+            pixel = tabpix[tableau[i][j][2]][tableau[i][j][3]]
             resultat[i].append(pixel)
             nbrpoint = int((tableau[i][j+1][1] - tableau[i][j][1])// echelle -1)
             for k in range (nbrpoint):
                 resultat[i].append(pixel)
-
+            del pixel
+    pixel = [0,0,0,1.]        
     print("deuxieme stade")    
     """for i in range(longi):
         ajoutfin = []
@@ -231,7 +275,7 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
             ajoutfin.append([0.,0.,0.,1.])
         resultat[i] = resultat[i] + ajoutfin """
         
-    
+    del tableau
            
     derniereverif(resultat)   
     print("phase fin") 
@@ -243,9 +287,11 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
                 xmin = min(xmin, i)
                 xmax = max(xmax , i)
         if xmax > xmin:
+            del pixel
             pixel = copy.deepcopy(resultat[xmin] [j])
             for i in range(xmin, xmax + 1):
                 if resultat[i][j][0] != 0. or resultat[i][j][1] != 0. or resultat[i][j][2] != 0. or resultat[i][j][3] != 1.:
+                    del pixel
                     pixel = copy.deepcopy(resultat[i][j])
                     """return resultat[i][j]"""
                 else:
@@ -256,22 +302,29 @@ def remplissage(tableau, xmin , xmax , ymin , ymax, echelle):
     
     
 """idee trouver ordre des grandeurs en regardant les ecart minimus entre abscisses..."""
-def reorgan(tableau):
+def reorgan(tableau):    
     long1 = len(tableau)
     resultat = [[tableau[0]]]
     j = 0
     k = 0
     ref = tableau[0][0]
+    nbr = 0
     for i in range(1,long1):
-        if abs(ref - tableau[i-1][0]) <= 0.088 :
-            resultat[j].append(tableau[i])
+        if abs(-ref + tableau[i][0]) <= 0.093 :
+            resultat[j].append(tableau[i]) 
+            nbr += 1 
         else:
+            if nbr <2 :
+                del resultat[j]
+                j = j - 1
+            nbr = 0    
             ref = tableau[i][0]
             resultat.append([tableau[i]])
-            j = j+1    
+            j = j+1  
+              
     return np.array(resultat)       
     
-    
+
     
 def resolution(vecteur, rayon, x ,y ,z):
     """resolution du systeme d'intersection de la droite de vecteur directeur vecteur et passant par le point de coordonnées x,y,z avec le cylindre de rayon rayon d'axe Oz"""
@@ -290,40 +343,29 @@ def rotationvecteur (vecteur, normale):
         
     
     
-def Trifusion(tableau,p,r):
+def Trifusion(tableau,p,r, precision):
     if p <r:
         q = int( (p + r) // 2)
-        Trifusion(tableau, p, q)
-        Trifusion(tableau, q+1 ,r)
-        Fusion(tableau, p, q, r)
+        Trifusion(tableau, p, q,precision)
+        Trifusion(tableau, q+1 ,r, precision)
+        Fusion(tableau, p, q, r, precision)
 
 
 
-def tri (tableau1):
+def triinsertion (tableau,precision):
     """tri insertion n'est pas optimale pour le traitement du tableau"""
-    tableau =np.copy(tableau1)
+    """tableau =np.copy(tableau1)"""
     long = len(tableau)
-    ymin = tableau[0][0][1]
-    ymax= ymin
+    
     for i in range (long):
         j =i
-        ymin = min( ymin, tableau[i][0][1])
-        ymax = max(ymin, tableau[i][0][1])
-        if i ==1000:
             
-            print("premiere boucle passe")
-        if i == 2000:
-            print("10000") 
-            return ymin, ymax, tableau   
-        if i == long//4 :
-            print("premiere moitie ok") 
-            
-        while (j> 0 and ((tableau[j][0][0] -  tableau[j - 1][0][0] < - 0.001 )  or ( (abs(tableau[j][0][0] - tableau[j - 1][0][0]) <= 0.001) and (tableau[j][0][1] < tableau[j - 1][0][1]) ) )  ):
+        while (j> 0 and ((tableau[j][0] -  tableau[j - 1][0] < - precision)  or ( (abs(tableau[j][0] - tableau[j - 1][0]) <= precision) and (tableau[j][1] < tableau[j - 1][1]) ) )  ):
             tableau[j], tableau[j-1] = copy.deepcopy(tableau[j-1]), copy.deepcopy(tableau[j])
             j = j-1
             if j <0 :
                 print("warning")
-    return ymin, ymax, tableau   
+    
 
 
 
@@ -336,7 +378,7 @@ def tri (tableau1):
 def veriftri (tableau):
     long = len(tableau)
     for i in range(1,long):
-        if tableau[i][0][0] - tableau[i-1][0][0] <- 1:
+        if tableau[i][0] - tableau[i-1][0] <- 0.001:
             return i
     return True                     
  
