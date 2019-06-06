@@ -2,27 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 def main():
-    resultat = pointimage(280,0,161.7,1300,600)
+    resultat = pointimage(500,0,288.7,800,900)
     indice =  testimage(resultat)
     return indice
 
-def rotatiotab(tableau, xs, ys , zs) :
 
-    """rotation du tableau de pixel pour le rendre orthogonal au vecteur OS"""
-    """tableau dans le plan O,y,z raotation d'axe Oy"""
-    unitairez = np.array([0,0,1])
-    vectOS = np.array([xs, ys, zs])
-    angle =  math.asin(vectOS.dot(unitairez) /(math.sqrt(xs**2 + ys**2 + zs**2)))
-    print (angle / math.pi * 180)
-    longi = len(tableau)
-    longj = len(tableau[0])
-    for j in range(longj):
-        for i in range (longi):
-            long = norme(tableau[i][j] - tableau[0][j])
-            compx = long * math.sin(angle)
-            vecteur = np.array([long * math.sin(angle),0, long* (1 - math.cos(angle))])
-            tableau[i][j] = tableau[i][j] + vecteur
-    print("rotat faite")
 
 
 
@@ -122,10 +106,11 @@ def interectangle (intersec, vecteur):
     """intersecton de la droite de vecteur directeur vecteur et passant par le point intersec avec le plan (O,0x,0y"""
     zvecteur = vecteur.dot([0,0,1])
     z = intersec.dot([0,0,1])
-    if zvecteur == 0:
+    if zvecteur == 0 or z < 0:
         return False
     else:
         k = - z / zvecteur
+
         return np.array([k * vecteur[0] + intersec[0],k * vecteur[1] + intersec[1], 0])
 
 
@@ -151,13 +136,13 @@ def parcourir(tableau):
 
 def pointimage (xs,ys,zs,longuz, longuy):
     """renvoie un tableau des coordonnées des "points image" pour chaque pixel"""
-    rayon = 20
+    rayon = 120
     """26"""
 
-    echelle = 8
-    xdebut = 30
+    echelle = 16
+    xdebut = 400
     ydebut = -(longuy/echelle)//2
-    zdebut = 160
+    zdebut = 270
     resultat = []
     tabcoor = []
     for i in range(longuz):
@@ -202,7 +187,23 @@ def resolution(vecteur, rayon, x ,y ,z):
 
 
 
+def rotatiotab(tableau, xs, ys , zs) :
 
+    """rotation du tableau de pixel pour le rendre orthogonal au vecteur OS"""
+    """tableau dans le plan O,y,z raotation d'axe Oy"""
+    unitairez = np.array([0,0,1])
+    vectOS = np.array([xs, ys, zs])
+    angle =  math.asin(vectOS.dot(unitairez) /(math.sqrt(xs**2 + ys**2 + zs**2)))
+    print (angle / math.pi * 180)
+    longi = len(tableau)
+    longj = len(tableau[0])
+    for j in range(longj):
+        for i in range (longi):
+            long = norme(tableau[i][j] - tableau[0][j])
+            compx = long * math.sin(angle)
+            vecteur = np.array([long * math.sin(angle),0, long* (1 - math.cos(angle))])
+            tableau[i][j] = tableau[i][j] + vecteur
+    print("rotat faite")
 
 
 
@@ -228,9 +229,9 @@ def testimage (tableau):
     """affiche l'image des pixels"""
     tableauim = plt.imread("/home/alexandre/Images/modif.png")
     image = []
-    echelle2 = 0.6
-    xcentre, ycentre = parcourir(tableau)
-    xcentre = 0
+    echelle2 = 1
+    """xcentre, ycentre = parcourir(tableau)"""
+    xcentre = +120
     ycentre = 0
     xcentre = int(xcentre)
     ycentre = int(ycentre)
