@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 def main():
-    resultat = pointimage(350,0,450,1300,600)
+    resultat = pointimage(350,0,250,1300,600)
     indice =  testimage(resultat)
     return indice
  
@@ -127,7 +127,7 @@ def parcourir(tableau):
     
 def pointimage (xs,ys,zs,longuz, longuy):
     """renvoie un tableau des coordonnées des "points image" pour chaque pixel"""
-    rayon = 40
+    rayon = 20
     """26"""
     
     echelle = 8
@@ -197,12 +197,10 @@ def rotationvecteur (vecteur, normale):
             
 def testimage (tableau):
     """affiche l'image des pixels"""
-    tableauim = plt.imread("/home/alexandre/Images/modif.png")
+    tableauim = plt.imread("/home/alexandre/Images/lena.png")
     image = []
     echelle2 = 0.6
     xcentre, ycentre = parcourir(tableau)
-    xcentre = 0
-    ycentre = 0
     xcentre = int(xcentre) 
     ycentre = int(ycentre)
     longuimagex = len(tableauim)
@@ -233,7 +231,6 @@ def testimage (tableau):
                     image[i].append([0,0,0,1.])
             else:
                 image[i].append([1.,0,0,1.])
-    return image       
     plt.imshow(np.array(image))
     plt.show()            
     return np.array(tableauindice)
