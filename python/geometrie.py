@@ -38,7 +38,7 @@ def calculnormale(intersec):
     x = intersec.dot([1,0,0])
     y = intersec.dot([0,1,0])
     norme = math.sqrt ( x**2 + y**2)
-    normale = np.array([x,y,0])
+    normale = np.array([-x,-y,0])
     return normale / norme
     
         
@@ -208,7 +208,7 @@ def testimage (tableau):
     """ longuimagey = (len(tableauim[0])/echelle)//2"""
     longuimagey = len(tableauim[0])
     indicentre = len(tableauim) //2
-    indjcentre = len(tableauim)//2
+    indjcentre = len(tableauim[0])//2
     
     tableauindice = []
 
