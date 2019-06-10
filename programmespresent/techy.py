@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import math
 import copy
 """idée faire plein de trifusion avec un parametre gros au début et plus fin ensuite"""
-
+def main():
+    opti(plt.imread("/home/alexandre/Images/modif.png"),20,350,250)
+    
 def comptecol (tableau):
     for i in range(len(tableau)):
         if len(tableau[i] ) <2:
@@ -208,7 +210,7 @@ def opti(tableau, rayon, xs,zs):
     print("step 4 done")
     
     tablim = remplissage(tablim,tableau, xmin ,xmax, ymin, ymax)
-    return tablim
+    
     
     
     plt.imshow(np.array(tablim))
