@@ -4,7 +4,7 @@ import math
 import copy
 """repère x vers le bas et y vers la droite"""
 def main():
-    return 0
+    recupcoor(1)
 
 
 
@@ -33,19 +33,7 @@ def fonctiondeltax(xcentre, ycentre,tabxdefo, tabydefo, tabx, taby ):
 
     return tabr, tabimager
 
-def recupimage(longi,longj, i, j,xcentre, ycentre ,echelle, k1, k2):
-    rcarre =(i * echelle - xcentre)**2 + (j * echelle - ycentre) ** 2
-    deltax = (k1 * rcarre + k2 * rcarre**2) * (i * echelle - xcentre)
-    deltay = (k1 * rcarre + k2 * rcarre**2) * (j * echelle - ycentre)
-    xantecedent = i * echelle + deltax
-    yantecedent = j * echelle + deltay
-    indicei = int(round(xantecedent / echelle))
-    indicej = int(round(yantecedent /echelle))
-    indicej = min(indicej, longj-1)
-    indicej =max(0, indicej)
-    indicei = min (longi-1, indicei)
-    indicei = max(0, indicei)
-    return indicei, indicej,deltax
+
 
 
 def intersection(tab1, tab2):
@@ -89,6 +77,9 @@ def recupcoor (echelle):
 
     ensembleligne = []
     ensemblecolonne = []
+
+
+
     """recuperation des lignes et de colonnes noires"""
     for i in range(nbri):
         ensembleligne.append(recupligne(image, tabindiceligne[i]))
@@ -98,11 +89,13 @@ def recupcoor (echelle):
     tabinterdefory = []
     tabinterx = []
     tabintery = []
+    intervallei = len(image) // nbri * echelle
+    intervallej = len(image[1]) // nbrj * echelle
     for i in range (nbri):
         for j in range(nbrj):
 
-            tabinterx.append((i + 1) * echelle)
-            tabintery.append((j + 1) * echelle)
+            tabinterx.append((i + 1) * intervallei)
+            tabintery.append((j + 1) * intervallej)
             interx, intery = intersection(ensembleligne[i], ensemblecolonne[j])
             tabinterdeforx.append(interx * echelle)
             tabinterdefory.append(intery* echelle)
@@ -110,8 +103,10 @@ def recupcoor (echelle):
 
     """return recupcoeff(tabr, tabimager, 2)"""
     coeff = recupcoeff(tabr, tabimager, 2)
-    k1 = coeff[0]
-    k2 = coeff[1]
+    k0 = 0
+    k1 = coeff[1]
+    k2 = coeff[2]
+
 
 
     imagefinale = []
@@ -122,7 +117,7 @@ def recupcoor (echelle):
     indice = []
     for i in range(longi):
         for j in range (longj):
-            indicei, indicej, delta = recupimage(longi, longj, i, j, xcentre, ycentre, echelle, k1, k2)
+            indicei, indicej, delta = recupimage(longi, longj, i, j, xcentre, ycentre, echelle,k0, k1, k2)
 
             indice.append(delta)
 
@@ -142,14 +137,15 @@ def recupcoor (echelle):
 def recupcoeff (tabx, taby, degf):
     """le principe et de poser le systeme sous la forme matricielle pour obtenir facilement les coeff"""
     n = len(tabx)
-    matsys = [[somme(3,tabx),somme(4,tabx)],[somme(4,tabx),somme(5,tabx)]]
-    matconst = [coeffconstant(1, tabx, taby), coeffconstant(2,tabx, taby)]
-
-    """for i in range (degf) :
+    """matsys = [[somme(3,tabx),somme(4,tabx)],[somme(4,tabx),somme(5,tabx)]]
+    matconst = [coeffconstant(1, tabx, taby), coeffconstant(2,tabx, taby)]"""
+    matsys = []
+    matconst = []
+    for i in range (degf+1) :
         matsys.append([])
-        matconst.append(coeffconstant(i + 1,tabx, taby))
-        for j in range(degf):
-            matsys[i].append(somme(i+1 + j+1, tabx))"""
+        matconst.append(coeffconstant(i,tabx, taby))
+        for j in range(degf+1):
+            matsys[i].append(somme(i + j, tabx))
     matsys = np.array(matsys)
     matconst = np.array(matconst)
     return np.linalg.inv(matsys).dot(matconst)
@@ -178,7 +174,19 @@ def recupcolonne(im, indicedepart):
         tabx.append(i)
     return [tabx, taby]
 
-
+def recupimage(longi,longj, i, j,xcentre, ycentre ,echelle,k0, k1, k2):
+    rcarre =(i * echelle - xcentre)**2 + (j * echelle - ycentre) ** 2
+    deltax = (k1 * rcarre + k2 * rcarre**2 + k0) * (i * echelle - xcentre)
+    deltay = (k1 * rcarre + k2 * rcarre**2 + k0) * (j * echelle - ycentre)
+    xantecedent = i * echelle - deltax
+    yantecedent = j * echelle - deltay
+    indicei = int(round(xantecedent / echelle))
+    indicej = int(round(yantecedent /echelle))
+    indicej = min(indicej, longj-1)
+    indicej =max(0, indicej)
+    indicei = min (longi-1, indicei)
+    indicei = max(0, indicei)
+    return indicei, indicej,deltax
 
 def recupligne(im,  indicedepart):
     tabx = []
