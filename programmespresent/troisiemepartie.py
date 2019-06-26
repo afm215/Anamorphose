@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import copy
-"""idée faire plein de trifusion avec un parametre gros au début et plus fin ensuite"""
 def main():
     opti(plt.imread("/home/alexandre/Images/modif.png"),20,350,250)
     
@@ -10,45 +9,8 @@ def comptecol (tableau):
     for i in range(len(tableau)):
         if len(tableau[i] ) <2:
             return False
-        return True
-
-def parcourir(tableau):
-    """programme test"""
-    taillex = len(tableau)
-    tailley = len(tableau[0])
-    resultat = 0
-    moyennex = 0
-    moyenney =0
-    for i in range(taillex):
-        for j in range(len(tableau[i])):
-            if type(tableau[i][j]) != type(False):
-                resultat += 1
-                moyennex += tableau[i][j][0]
-                moyenney += tableau[i][j][1]
-    return moyennex/resultat, moyenney/resultat 
-    
-    
-def ecartaucentre(tableau):
-    """ecart des abscisses et ordonnées par rapport au point central"""
-    xcentre , ycentre = parcourir(tableau)
-    longupx = len(tableau)
-    longupy = len(tableau[0])
-    somme = 0
-    longueurx = 0
-    longueury = 0 
-    for i in range(longupx):
-        for j in range(len(tableau[i])):
-            if type(tableau[i][j])!=type(False):
-                longueurx  += abs(tableau[i][j][0] - xcentre)
-                longueury += abs(tableau[i][j][1] - ycentre)
-                somme += 1
-    return longueurx//somme, longueury//somme                
+        return True           
           
-    
-    
-def main():
-    a = plt.imread("/home/alexandre/Images/lena.png")
-    return opti(a, 200, 400,800)
 
 
 def calculnormale(intersec):
@@ -65,23 +27,6 @@ def calculvecteur (x1, x2, y1, y2, z1, z2):
     resultat = np.array([x2 - x1, y2-y1, z2- z1])
     return resultat  
       
-    
-    
-def convert(tableau):
-    resultat = []
-    for i in range(len (tableau)):
-        resultat.append (np.append(tableau[i][0] , tableau[i][1]))
-    return np.array(resultat)   
-
-def coninvers(tableau):
-    resultat = []
-    for i in range(len(tableau)):
-        resultat.append([tableau[i][0:3], tableau[i][3:7]])
-    return np.array(resultat) 
- 
- 
- 
- 
 def derniereverif(tableau):
     longi = len(tableau)
     ymax = 0
@@ -89,8 +34,6 @@ def derniereverif(tableau):
     for i in range(longi):
         ymax = max(ymax, len(tableau[i]))
         ymin = (min(ymin, len(tableau[i])))
-    print(ymax)  
-    print(ymin)  
     for i in range(longi):
         ecart = ymax - len(tableau[i])
         for j in range(ecart):
@@ -177,7 +120,6 @@ def opti(tableau, rayon, xs,zs):
     zdebut =  longx * echelle/2
     ydebut = - rayon / 2
     tablim = []
-    """on place l'image dans le cas tres simple orthogonale à axe Ox """
     tableaucoor = []
     for i in range(longx):
         tableaucoor.append([])
@@ -218,20 +160,19 @@ def opti(tableau, rayon, xs,zs):
     
     
     
-    
-
-def recherchetab ( tableau):
-    """confirme le probleme au niveau du tri"""
-    long = len(tableau)
-    res = 0
-    resultat = []
-    for i in range(1, long ):
-        if abs(tableau[i][0][0] - 51.8) <=0.06:
-            res += 1
-            resultat.append(tableau[i])
-    return np.array(resultat) 
-    
-    
+def parcourir(tableau):
+    taillex = len(tableau)
+    tailley = len(tableau[0])
+    resultat = 0
+    moyennex = 0
+    moyenney =0
+    for i in range(taillex):
+        for j in range(len(tableau[i])):
+            if type(tableau[i][j]) != type(False):
+                resultat += 1
+                moyennex += tableau[i][j][0]
+                moyenney += tableau[i][j][1]
+    return moyennex/resultat, moyenney/resultat     
     
 def recherchyminmax (tableau):
     long = len(tableau)
@@ -244,6 +185,7 @@ def recherchyminmax (tableau):
 
 
 def remplissage(tableau,tabpix, xmin , xmax , ymin , ymax):
+    """remplit les ecart entre les points images pour  donner l'image finale"""
     echelle = 1.5
     resultat = []
     longi = len(tableau)
@@ -269,13 +211,6 @@ def remplissage(tableau,tabpix, xmin , xmax , ymin , ymax):
             del pixel
     pixel = [0,0,0,1.]        
     print("deuxieme stade")    
-    """for i in range(longi):
-        ajoutfin = []
-        """"""le rang -1 correspond au dernier element d une liste""""""
-        b =  int((- tableau[i][-1][0][1] + ymax) // echelle)    
-        for j in range(b):
-            ajoutfin.append([0.,0.,0.,1.])
-        resultat[i] = resultat[i] + ajoutfin """
         
     del tableau
            
@@ -295,16 +230,14 @@ def remplissage(tableau,tabpix, xmin , xmax , ymin , ymax):
                 if resultat[i][j][0] != 0. or resultat[i][j][1] != 0. or resultat[i][j][2] != 0. or resultat[i][j][3] != 1.:
                     del pixel
                     pixel = copy.deepcopy(resultat[i][j])
-                    """return resultat[i][j]"""
                 else:
-                    """print (resultat[i][j])"""
                     resultat[i][j] = copy.deepcopy(pixel)
-                    """return resultat[i][j] """   
     return resultat     
     
     
 """idee trouver ordre des grandeurs en regardant les ecart minimus entre abscisses..."""
-def reorgan(tableau):    
+def reorgan(tableau): 
+    """fonction cherchant à convertir  un tableau à une dimension en un tableau à deux dimensions"""  
     long1 = len(tableau)
     resultat = [[tableau[0]]]
     j = 0
@@ -356,7 +289,6 @@ def Trifusion(tableau,p,r, precision):
 
 def triinsertion (tableau,precision):
     """tri insertion n'est pas optimale pour le traitement du tableau"""
-    """tableau =np.copy(tableau1)"""
     long = len(tableau)
     
     for i in range (long):
@@ -367,44 +299,6 @@ def triinsertion (tableau,precision):
             j = j-1
             if j <0 :
                 print("warning")
-    
-
-
-
-       
-
-
-
-    
-    
-def veriftri (tableau):
-    long = len(tableau)
-    for i in range(1,long):
-        if tableau[i][0] - tableau[i-1][0] <- 0.001:
-            return i
-    return True                     
- 
- 
- 
- 
- 
- 
- 
- 
-def ultro(tableau):
-    resultat = []
-    longx = len(tableau)
-    longy = len(tableau[0])
-    for i in range(longx):
-        resultat.append([])
-        for j in range(longy):
-            resultat[i].append([])
-            for k in range(4):
-                resultat[i][j].append(float(tableau[i][j][k]))
-    plt.imshow(np.array(resultat) )
-    plt.show()
-    
-                 
      
 
     

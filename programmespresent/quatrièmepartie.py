@@ -5,6 +5,12 @@ import copy
 """repère x vers le bas et y vers la droite"""
 def main():
     recupcoor(1)
+
+
+
+
+
+
 def coeffconstant(indice, tabx,taby):
     """attention meme nombre d'y que de x"""
     long = len(tabx)
@@ -50,7 +56,6 @@ def recupcoor (echelle):
     tabindicecollonne = []
     xcentre = len(image) / 2 * echelle
     ycentre = len(image[1]) / 2 * echelle
-    """je compte ici le nombre de lignes et de colonnes du quadrillage"""
     for indicei in range(longi):
         if  image[indicei][0][0] == 0 and image[indicei][0][1] == 0 and image[indicei][0][2] == 0 and image[indicei][0][3] == 1:
             if nbri == 0:
@@ -94,8 +99,9 @@ def recupcoor (echelle):
             interx, intery = intersection(ensembleligne[i], ensemblecolonne[j])
             tabinterdeforx.append(interx * echelle)
             tabinterdefory.append(intery* echelle)
-
     tabr, tabimager = fonctiondeltax(xcentre, ycentre, tabinterdeforx, tabinterdefory, tabinterx, tabintery)
+
+    """return recupcoeff(tabr, tabimager, 2)"""
     coeff = recupcoeff(tabr, tabimager, 2)
     k0 = 0
     k1 = coeff[1]
@@ -126,11 +132,13 @@ def recupcoor (echelle):
 
 
 
-    """je considère que il s'agit d'un quadrillage d'image parfait"""
+    """je considere que il s'agit d'uncadrillage d'image parfait"""
 
 def recupcoeff (tabx, taby, degf):
-    """le principe est de poser le systême sous la forme matricielle pour obtenir facilement les coeff"""
+    """le principe et de poser le systeme sous la forme matricielle pour obtenir facilement les coeff"""
     n = len(tabx)
+    """matsys = [[somme(3,tabx),somme(4,tabx)],[somme(4,tabx),somme(5,tabx)]]
+    matconst = [coeffconstant(1, tabx, taby), coeffconstant(2,tabx, taby)]"""
     matsys = []
     matconst = []
     for i in range (degf+1) :
@@ -148,7 +156,13 @@ def recupcolonne(im, indicedepart):
     indice = indicedepart
     long = len(im[indice])
     for i in range(long):
+        """recuperation de la ligne commencant à [indicedepart] [0]"""
+
+
+
+
         if not(im[i][indice][0] ==0 and im[i][indice][1] ==0 and im[i][indice][2] ==0 and im[i][indice][3]  == 1):
+            """remarque egalité stricte à surveiller"""
             if im[i][indice + 1][0] ==0 and im[i][indice + 1][1] == 0 and im[i][indice + 1][2] == 0 and im[i][indice + 1][3] == 1:
                 indice += 1
             elif im[i][indice - 1][0] == 0 and im[i][indice - 1][1] == 0 and im[i][indice - 1][2] == 0 and im[i][indice - 1][3] == 1:
@@ -186,6 +200,7 @@ def recupligne(im,  indicedepart):
 
 
         if not(im[indice][i][0] ==0 and im[indice][i][1] ==0 and im[indice][i][2] ==0 and im[indice][i][3]  == 1):
+            """remarque egalité stricte à surveiller"""
             if im[indice + 1][i][0] ==0 and im[indice + 1][i][1] == 0 and im[indice + 1][i][2] == 0 and im[indice + 1][i][3] == 1:
                 indice += 1
             elif im[indice - 1][i][0] == 0 and im[indice - 1][i][1] == 0 and im[indice - 1][i][2] == 0 and im[indice - 1][i][3] == 1:

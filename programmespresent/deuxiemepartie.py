@@ -176,14 +176,11 @@ def testimage (tableau):
     tableauim = plt.imread("/home/alexandre/Images/modif.png")
     image = []
     echelle2 = 1
-    """xcentre, ycentre = parcourir(tableau)"""
     xcentre = +120
     ycentre = 0
     xcentre = int(xcentre)
     ycentre = int(ycentre)
     longuimagex = len(tableauim)
-    """longuimagex = (len(tableauim)/echelle)//2"""
-    """ longuimagey = (len(tableauim[0])/echelle)//2"""
     longuimagey = len(tableauim[0])
     indicentre = len(tableauim) //2
     indjcentre = len(tableauim)//2
